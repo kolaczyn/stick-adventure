@@ -1,4 +1,5 @@
 mod collider;
+mod events;
 mod music;
 mod player;
 mod score;
@@ -6,6 +7,7 @@ mod stick;
 mod ui;
 
 use bevy::prelude::*;
+use events::MusicToggledEvent;
 use stick::StickPickedEvent;
 use ui::app_ui_plugin::AppUIPlugin;
 
@@ -19,6 +21,7 @@ fn main() {
         .add_plugin(AppUIPlugin)
         .add_startup_system(setup)
         .add_event::<StickPickedEvent>()
+        .add_event::<MusicToggledEvent>()
         .run();
 }
 

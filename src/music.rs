@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use crate::events::{MusicState, MusicToggledEvent};
+
 pub struct MusicPlugin;
 
 impl Plugin for MusicPlugin {
@@ -29,11 +31,20 @@ fn mute_music_system(
     music_controller: ResMut<MusicController>,
     audio_sinks: Res<Assets<AudioSink>>,
     keyboard_input: Res<Input<KeyCode>>,
+    mut music_muted_event_writer: EventWriter<MusicToggledEvent>,
 ) {
     if keyboard_input.just_pressed(KeyCode::M) {
         if let Some(audio_sink) = audio_sinks.get(&music_controller.0) {
             let current_volume = audio_sink.volume();
             let new_volume = if current_volume > 0.0 { 0.0 } else { 1.0 };
+
+            music_muted_event_writer.send(MusicToggledEvent {
+                state: if new_volume > 0.0 {
+                    MusicState::Playing
+                } else {
+                    MusicState::Paused
+                },
+            });
             audio_sink.set_volume(new_volume);
         }
     }

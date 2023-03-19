@@ -1,12 +1,15 @@
 use bevy::prelude::*;
 
+use crate::events::{MusicState, MusicToggledEvent};
+
 use super::constants::WINDOW_PADDING;
 
 pub struct MusicStatusPlugin;
 
 impl Plugin for MusicStatusPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(setup_music_status);
+        app.add_startup_system(setup_music_status)
+            .add_system(update_text_on_event_system);
     }
 }
 
@@ -40,4 +43,18 @@ fn setup_music_status(mut commands: Commands, asset_server: Res<AssetServer>) {
         },
         MusicStatus,
     ));
+}
+
+fn update_text_on_event_system(
+    mut music_status_query: Query<(&MusicStatus, &mut Text)>,
+    mut music_status_event_reader: EventReader<MusicToggledEvent>,
+) {
+    for e in music_status_event_reader.iter() {
+        let (_, mut text) = music_status_query.single_mut();
+        let new_status = match e.state {
+            MusicState::Playing => "playing",
+            MusicState::Paused => "muted",
+        };
+        text.sections[0].value = format!("Music is {}", new_status);
+    }
 }
