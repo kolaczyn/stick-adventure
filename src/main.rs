@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use rand::Rng;
 
 const PLAYER_WIDTH: f32 = 15.0;
 const PLAYER_SPEED: f32 = 3.0;
@@ -17,6 +18,8 @@ fn main() {
         .add_system(move_player_system)
         .add_system(check_player_stick_collision_system)
         .add_system(update_score_text_system)
+        .add_system(spawn_new_stick)
+        .add_event::<StickPickedEvent>()
         .run();
 }
 
@@ -27,6 +30,9 @@ struct Player;
 struct StickBundle {
     sprite_bundle: SpriteBundle,
 }
+
+#[derive(Default)]
+struct StickPickedEvent;
 
 #[derive(Component)]
 struct Stick;
@@ -41,7 +47,7 @@ impl StickBundle {
                     ..default()
                 },
                 sprite: Sprite {
-                    color: Color::RED,
+                    color: Color::BISQUE,
                     ..default()
                 },
                 ..default()
@@ -150,6 +156,7 @@ fn check_player_stick_collision_system(
     mut player_query: Query<(&Player, &Transform)>,
     mut stick_query: Query<(&Stick, &Transform, Entity)>,
     mut score_query: Query<&mut Score>,
+    mut stick_picked_events: EventWriter<StickPickedEvent>,
 ) {
     for (_player, player_transform) in player_query.iter_mut() {
         for (_stick, stick_transform, stick_entity) in stick_query.iter_mut() {
@@ -163,8 +170,23 @@ fn check_player_stick_collision_system(
                     < stick_transform.translation.y + STICK_HEIGHT / 2.0
             {
                 commands.entity(stick_entity).despawn();
+                stick_picked_events.send(default());
+
                 score_query.single_mut().value += 1;
             }
         }
+    }
+}
+
+fn get_random_stick_location() -> Vec3 {
+    let mut rng = rand::thread_rng();
+    let x = rng.gen_range(-400.0..400.0);
+    let y = rng.gen_range(-400.0..400.0);
+    Vec3::new(x, y, 0.0)
+}
+
+fn spawn_new_stick(mut stick_picked_event: EventReader<StickPickedEvent>, mut commands: Commands) {
+    if !stick_picked_event.iter().next().is_none() {
+        commands.spawn((StickBundle::new(get_random_stick_location()), Stick));
     }
 }
