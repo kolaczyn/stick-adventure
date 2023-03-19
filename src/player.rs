@@ -1,9 +1,14 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, sprite::collide_aabb::collide};
 
-use crate::stick::{Stick, StickPickedEvent, STICK_HEIGHT, STICK_WIDTH};
+use crate::{
+    collider::Collider,
+    stick::{Stick, StickPickedEvent, STICK_SIZE},
+};
 
 pub const PLAYER_WIDTH: f32 = 15.0;
 pub const PLAYER_SPEED: f32 = 3.0;
+
+pub const PLAYER_SIZE: Vec2 = Vec2::new(PLAYER_WIDTH, PLAYER_WIDTH);
 
 pub struct PlayerPlugin;
 
@@ -18,21 +23,35 @@ impl Plugin for PlayerPlugin {
 #[derive(Component)]
 pub struct Player;
 
+#[derive(Bundle)]
+struct PlayerBundle {
+    sprite: SpriteBundle,
+}
+
+impl PlayerBundle {
+    fn new(location: Vec3) -> Self {
+        Self {
+            sprite: SpriteBundle {
+                transform: Transform {
+                    translation: location,
+                    scale: Vec3::new(PLAYER_WIDTH, PLAYER_WIDTH, 0.0),
+                    ..default()
+                },
+                sprite: Sprite {
+                    color: Color::ALICE_BLUE,
+                    ..default()
+                },
+                ..default()
+            },
+        }
+    }
+}
+
 fn setup_player(mut commands: Commands) {
     commands.spawn((
-        SpriteBundle {
-            transform: Transform {
-                translation: Vec3::new(0.0, 0.0, 0.0),
-                scale: Vec3::new(PLAYER_WIDTH, PLAYER_WIDTH, 0.0),
-                ..default()
-            },
-            sprite: Sprite {
-                color: Color::ALICE_BLUE,
-                ..default()
-            },
-            ..default()
-        },
+        PlayerBundle::new(Vec3::new(0.0, 0.0, 0.0)),
         Player,
+        Collider,
     ));
 }
 
@@ -58,24 +77,21 @@ fn move_player_system(
 
 fn check_player_stick_collision_system(
     mut commands: Commands,
-    mut player_query: Query<(&Player, &Transform)>,
-    mut stick_query: Query<(&Stick, &Transform, Entity)>,
+    mut player_query: Query<(&Player, &Transform, &Collider)>,
+    mut stick_query: Query<(&Stick, &Transform, Entity, &Collider)>,
     mut stick_picked_events: EventWriter<StickPickedEvent>,
 ) {
-    for (_player, player_transform) in player_query.iter_mut() {
-        for (_stick, stick_transform, stick_entity) in stick_query.iter_mut() {
-            if player_transform.translation.x + PLAYER_WIDTH / 2.0
-                > stick_transform.translation.x - STICK_WIDTH / 2.0
-                && player_transform.translation.x - PLAYER_WIDTH / 2.0
-                    < stick_transform.translation.x + STICK_WIDTH / 2.0
-                && player_transform.translation.y + PLAYER_WIDTH / 2.0
-                    > stick_transform.translation.y - STICK_HEIGHT / 2.0
-                && player_transform.translation.y - PLAYER_WIDTH / 2.0
-                    < stick_transform.translation.y + STICK_HEIGHT / 2.0
-            {
-                commands.entity(stick_entity).despawn();
-                stick_picked_events.send(default());
-            }
+    let player = player_query.single_mut();
+    for (_stick, stick_transform, stick_entity, _stick_collider) in stick_query.iter_mut() {
+        let collision = collide(
+            player.1.translation,
+            PLAYER_SIZE,
+            stick_transform.translation,
+            STICK_SIZE,
+        );
+        if collision.is_some() {
+            commands.entity(stick_entity).despawn();
+            stick_picked_events.send(StickPickedEvent);
         }
     }
 }

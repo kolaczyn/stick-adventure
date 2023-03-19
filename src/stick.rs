@@ -1,8 +1,12 @@
 use bevy::prelude::*;
 use rand::Rng;
 
+use crate::collider::Collider;
+
 pub const STICK_WIDTH: f32 = 20.0;
 pub const STICK_HEIGHT: f32 = 80.0;
+
+pub const STICK_SIZE: Vec2 = Vec2::new(STICK_WIDTH, STICK_HEIGHT);
 
 pub struct StickPlugin;
 
@@ -27,7 +31,7 @@ impl Stick {
 
 #[derive(Bundle)]
 struct StickBundle {
-    sprite_bundle: SpriteBundle,
+    sprite: SpriteBundle,
 }
 
 #[derive(Default)]
@@ -36,7 +40,7 @@ pub struct StickPickedEvent;
 impl StickBundle {
     fn new(location: Vec3) -> Self {
         Self {
-            sprite_bundle: SpriteBundle {
+            sprite: SpriteBundle {
                 transform: Transform {
                     translation: location,
                     scale: Vec3::new(STICK_WIDTH, STICK_HEIGHT, 0.0),
@@ -53,12 +57,24 @@ impl StickBundle {
 }
 
 fn setup_sticks(mut commands: Commands) {
-    commands.spawn((StickBundle::new(Vec3::new(-100.0, 0.0, 0.0)), Stick));
-    commands.spawn((StickBundle::new(Vec3::new(100.0, 0.0, 0.0)), Stick));
+    commands.spawn((
+        StickBundle::new(Vec3::new(-100.0, 0.0, 0.0)),
+        Stick,
+        Collider,
+    ));
+    commands.spawn((
+        StickBundle::new(Vec3::new(100.0, 0.0, 0.0)),
+        Stick,
+        Collider,
+    ));
 }
 
 fn spawn_new_stick(mut stick_picked_event: EventReader<StickPickedEvent>, mut commands: Commands) {
     if !stick_picked_event.iter().next().is_none() {
-        commands.spawn((StickBundle::new(Stick::get_random_stick_location()), Stick));
+        commands.spawn((
+            StickBundle::new(Stick::get_random_stick_location()),
+            Stick,
+            Collider,
+        ));
     }
 }

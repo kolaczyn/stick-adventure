@@ -1,3 +1,4 @@
+mod collider;
 mod player;
 mod score;
 mod stick;
