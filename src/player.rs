@@ -1,9 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{
-    score::Score,
-    stick::{Stick, StickPickedEvent, STICK_HEIGHT, STICK_WIDTH},
-};
+use crate::stick::{Stick, StickPickedEvent, STICK_HEIGHT, STICK_WIDTH};
 
 pub const PLAYER_WIDTH: f32 = 15.0;
 pub const PLAYER_SPEED: f32 = 3.0;
@@ -63,7 +60,6 @@ fn check_player_stick_collision_system(
     mut commands: Commands,
     mut player_query: Query<(&Player, &Transform)>,
     mut stick_query: Query<(&Stick, &Transform, Entity)>,
-    mut score_query: Query<&mut Score>,
     mut stick_picked_events: EventWriter<StickPickedEvent>,
 ) {
     for (_player, player_transform) in player_query.iter_mut() {
@@ -79,8 +75,6 @@ fn check_player_stick_collision_system(
             {
                 commands.entity(stick_entity).despawn();
                 stick_picked_events.send(default());
-
-                score_query.single_mut().value += 1;
             }
         }
     }

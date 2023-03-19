@@ -1,12 +1,15 @@
 use bevy::prelude::*;
 
+use crate::stick::StickPickedEvent;
+
 pub struct ScorePlugin;
 
 impl Plugin for ScorePlugin {
     fn build(&self, app: &mut App) {
         app.add_startup_system(setup_score)
             .add_startup_system(setup_score_text)
-            .add_system(update_score_text_system);
+            .add_system(update_score_text_system)
+            .add_system(update_score_on_collision_system);
     }
 }
 
@@ -55,4 +58,13 @@ fn update_score_text_system(score_query: Query<&Score>, mut score_text_query: Qu
     let score = score_query.single();
     let mut score_text = score_text_query.single_mut();
     score_text.sections[0].value = format!("Score: {}", score.value);
+}
+
+fn update_score_on_collision_system(
+    mut stick_picked_events: EventReader<StickPickedEvent>,
+    mut score_query: Query<&mut Score>,
+) {
+    if stick_picked_events.iter().next().is_some() {
+        score_query.single_mut().value += 1;
+    }
 }
