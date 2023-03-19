@@ -3,9 +3,11 @@ mod music;
 mod player;
 mod score;
 mod stick;
+mod ui;
 
-use bevy::{audio, prelude::*};
+use bevy::prelude::*;
 use stick::StickPickedEvent;
+use ui::score_text::ScoreTextPlugin;
 
 fn main() {
     App::new()
@@ -14,6 +16,7 @@ fn main() {
         .add_plugin(score::ScorePlugin)
         .add_plugin(stick::StickPlugin)
         .add_plugin(music::MusicPlugin)
+        .add_plugin(ScoreTextPlugin)
         .add_startup_system(setup)
         .add_event::<StickPickedEvent>()
         .run();
