@@ -1,5 +1,15 @@
 use bevy::prelude::*;
 
+pub struct ScorePlugin;
+
+impl Plugin for ScorePlugin {
+    fn build(&self, app: &mut App) {
+        app.add_startup_system(setup_score)
+            .add_startup_system(setup_score_text)
+            .add_system(update_score_text_system);
+    }
+}
+
 #[derive(Component)]
 pub struct Score {
     pub value: u32,
@@ -8,11 +18,11 @@ pub struct Score {
 #[derive(Component)]
 struct ScoreText;
 
-pub fn setup_score(mut commands: Commands) {
+fn setup_score(mut commands: Commands) {
     commands.spawn((Score { value: 0 },));
 }
 
-pub fn setup_score_text(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn setup_score_text(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
         TextBundle {
             text: Text {
@@ -41,12 +51,8 @@ pub fn setup_score_text(mut commands: Commands, asset_server: Res<AssetServer>) 
     ));
 }
 
-pub fn update_score_text_system(
-    score_query: Query<&Score>,
-    mut score_text_query: Query<&mut Text>,
-) {
+fn update_score_text_system(score_query: Query<&Score>, mut score_text_query: Query<&mut Text>) {
     let score = score_query.single();
-    println!("Score: {}", score.value);
     let mut score_text = score_text_query.single_mut();
     score_text.sections[0].value = format!("Score: {}", score.value);
 }

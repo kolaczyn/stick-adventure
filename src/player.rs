@@ -8,10 +8,20 @@ use crate::{
 pub const PLAYER_WIDTH: f32 = 15.0;
 pub const PLAYER_SPEED: f32 = 3.0;
 
+pub struct PlayerPlugin;
+
+impl Plugin for PlayerPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_startup_system(setup_player)
+            .add_system(move_player_system)
+            .add_system(check_player_stick_collision_system);
+    }
+}
+
 #[derive(Component)]
 pub struct Player;
 
-pub fn setup_player(mut commands: Commands) {
+fn setup_player(mut commands: Commands) {
     commands.spawn((
         SpriteBundle {
             transform: Transform {
@@ -29,7 +39,7 @@ pub fn setup_player(mut commands: Commands) {
     ));
 }
 
-pub fn move_player_system(
+fn move_player_system(
     keyboard_input: Res<Input<KeyCode>>,
     mut query: Query<(&Player, &mut Transform)>,
 ) {
@@ -49,7 +59,7 @@ pub fn move_player_system(
     }
 }
 
-pub fn check_player_stick_collision_system(
+fn check_player_stick_collision_system(
     mut commands: Commands,
     mut player_query: Query<(&Player, &Transform)>,
     mut stick_query: Query<(&Stick, &Transform, Entity)>,
