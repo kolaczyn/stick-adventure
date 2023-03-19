@@ -1,27 +1,24 @@
 use bevy::prelude::*;
 
-use crate::score::Score;
-
 use super::constants::WINDOW_PADDING;
 
-pub struct ScoreTextPlugin;
+pub struct MusicStatusPlugin;
 
-impl Plugin for ScoreTextPlugin {
+impl Plugin for MusicStatusPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(setup_score_text)
-            .add_system(update_score_text_system);
+        app.add_startup_system(setup_music_status);
     }
 }
 
 #[derive(Component)]
-struct ScoreText;
+struct MusicStatus;
 
-fn setup_score_text(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn setup_music_status(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
         TextBundle {
             text: Text {
                 sections: vec![TextSection {
-                    value: format!("Score: {}", 0),
+                    value: format!("Music is {}", "playing"),
                     style: TextStyle {
                         font: asset_server.load("fonts/FiraMono-Medium.ttf"),
                         font_size: 40.0,
@@ -34,22 +31,13 @@ fn setup_score_text(mut commands: Commands, asset_server: Res<AssetServer>) {
                 position_type: PositionType::Absolute,
                 position: UiRect {
                     left: Val::Px(WINDOW_PADDING),
-                    top: Val::Px(WINDOW_PADDING),
+                    bottom: Val::Px(WINDOW_PADDING),
                     ..Default::default()
                 },
                 ..Default::default()
             },
             ..Default::default()
         },
-        ScoreText,
+        MusicStatus,
     ));
-}
-
-fn update_score_text_system(
-    score_query: Query<&Score>,
-    mut score_text_query: Query<(&mut Text, &ScoreText)>,
-) {
-    let score = score_query.single();
-    let (mut score_text, _) = score_text_query.single_mut();
-    score_text.sections[0].value = format!("Score: {}", score.value);
 }

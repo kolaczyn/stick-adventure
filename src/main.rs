@@ -17,6 +17,7 @@ fn main() {
         .add_plugin(stick::StickPlugin)
         .add_plugin(music::MusicPlugin)
         .add_plugin(ScoreTextPlugin)
+        .add_plugin(ui::music_status::MusicStatusPlugin)
         .add_startup_system(setup)
         .add_event::<StickPickedEvent>()
         .run();
