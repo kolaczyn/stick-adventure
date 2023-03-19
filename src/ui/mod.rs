@@ -1,3 +1,4 @@
+pub mod app_ui_plugin;
 mod constants;
-pub mod music_status;
-pub mod score_text;
+mod music_status;
+mod score_text;

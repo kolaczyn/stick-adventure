@@ -7,7 +7,7 @@ mod ui;
 
 use bevy::prelude::*;
 use stick::StickPickedEvent;
-use ui::score_text::ScoreTextPlugin;
+use ui::app_ui_plugin::AppUIPlugin;
 
 fn main() {
     App::new()
@@ -16,8 +16,7 @@ fn main() {
         .add_plugin(score::ScorePlugin)
         .add_plugin(stick::StickPlugin)
         .add_plugin(music::MusicPlugin)
-        .add_plugin(ScoreTextPlugin)
-        .add_plugin(ui::music_status::MusicStatusPlugin)
+        .add_plugin(AppUIPlugin)
         .add_startup_system(setup)
         .add_event::<StickPickedEvent>()
         .run();
