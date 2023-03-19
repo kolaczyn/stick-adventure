@@ -1,9 +1,10 @@
 mod collider;
+mod music;
 mod player;
 mod score;
 mod stick;
 
-use bevy::prelude::*;
+use bevy::{audio, prelude::*};
 use stick::StickPickedEvent;
 
 fn main() {
@@ -12,6 +13,7 @@ fn main() {
         .add_plugin(player::PlayerPlugin)
         .add_plugin(score::ScorePlugin)
         .add_plugin(stick::StickPlugin)
+        .add_plugin(music::MusicPlugin)
         .add_startup_system(setup)
         .add_event::<StickPickedEvent>()
         .run();
