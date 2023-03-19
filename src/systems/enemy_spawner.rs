@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::events::SpawnEnemyEvent;
+use crate::common::events::SpawnEnemyEvent;
 
 const ENEMY_SPAWN_RATE_SECS: f32 = 1.0;
 
@@ -8,8 +8,7 @@ pub struct EnemySpawnerPlugin;
 
 impl Plugin for EnemySpawnerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_event::<SpawnEnemyEvent>()
-            .init_resource::<EnemySpawnerTimer>()
+        app.init_resource::<EnemySpawnerTimer>()
             .add_system(enemy_spawner_system);
     }
 }

@@ -1,34 +1,29 @@
-mod collider;
 mod common;
-pub mod constants;
-mod enemy;
-pub mod enemy_spawner;
-mod events;
-mod music;
-mod player;
-mod score;
-mod stick;
+pub mod entities;
+pub mod systems;
 mod ui;
 
 use bevy::prelude::*;
-use constants::{WINDOW_HEIGHT, WINDOW_WIDTH};
-use events::MusicToggledEvent;
-use stick::StickPickedEvent;
+use common::{
+    constants::{WINDOW_HEIGHT, WINDOW_WIDTH},
+    events::EventsPlugin,
+};
+use entities::{enemy::EnemyPlugin, player::PlayerPlugin, stick::StickPlugin};
+use systems::{enemy_spawner::EnemySpawnerPlugin, music::MusicPlugin, score::ScorePlugin};
 use ui::app_ui_plugin::AppUIPlugin;
 
 fn main() {
     App::new()
         .add_startup_system(setup)
         .add_plugins(get_plugins())
-        .add_plugin(player::PlayerPlugin)
-        .add_plugin(score::ScorePlugin)
-        .add_plugin(stick::StickPlugin)
-        .add_plugin(music::MusicPlugin)
+        .add_plugin(PlayerPlugin)
+        .add_plugin(ScorePlugin)
+        .add_plugin(StickPlugin)
+        .add_plugin(MusicPlugin)
         .add_plugin(AppUIPlugin)
-        .add_plugin(enemy::EnemyPlugin)
-        .add_plugin(enemy_spawner::EnemySpawnerPlugin)
-        .add_event::<StickPickedEvent>()
-        .add_event::<MusicToggledEvent>()
+        .add_plugin(EnemyPlugin)
+        .add_plugin(EnemySpawnerPlugin)
+        .add_plugin(EventsPlugin)
         .run();
 }
 

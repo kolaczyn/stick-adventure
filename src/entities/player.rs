@@ -1,9 +1,8 @@
 use bevy::{prelude::*, sprite::collide_aabb::collide};
 
-use crate::{
-    collider::Collider,
-    stick::{Stick, StickPickedEvent, STICK_SIZE},
-};
+use crate::{common::events::StickPickedEvent, systems::collider::Collider};
+
+use super::stick::{Stick, STICK_SIZE};
 
 pub const PLAYER_WIDTH: f32 = 15.0;
 pub const PLAYER_SPEED: f32 = 3.0;

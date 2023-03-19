@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use rand::Rng;
 
-use crate::collider::Collider;
+use crate::{common::events::StickPickedEvent, systems::collider::Collider};
 
 pub const STICK_WIDTH: f32 = 20.0;
 pub const STICK_HEIGHT: f32 = 80.0;
@@ -33,9 +33,6 @@ impl Stick {
 struct StickBundle {
     sprite: SpriteBundle,
 }
-
-#[derive(Default)]
-pub struct StickPickedEvent;
 
 impl StickBundle {
     fn new(location: Vec3) -> Self {

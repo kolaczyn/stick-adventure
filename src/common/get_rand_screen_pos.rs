@@ -1,7 +1,7 @@
 use bevy::prelude::Vec3;
 use rand::Rng;
 
-use crate::constants::{WINDOW_HEIGHT, WINDOW_WIDTH};
+use super::constants::{WINDOW_HEIGHT, WINDOW_WIDTH};
 
 pub fn get_rand_screen_pos() -> Vec3 {
     let mut rng = rand::thread_rng();

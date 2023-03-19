@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::score::Score;
+use crate::systems::score::Score;
 
 use super::constants::WINDOW_PADDING;
 

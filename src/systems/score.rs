@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::stick::StickPickedEvent;
+use crate::common::events::StickPickedEvent;
 
 pub struct ScorePlugin;
 

@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 
 use crate::{
-    collider::Collider, common::get_rand_screen_pos::get_rand_screen_pos, events::SpawnEnemyEvent,
+    common::{events::SpawnEnemyEvent, get_rand_screen_pos::get_rand_screen_pos},
+    systems::collider::Collider,
 };
 
 pub const ENEMY_WIDTH: f32 = 100.0;

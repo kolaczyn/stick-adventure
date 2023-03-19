@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::events::{MusicState, MusicToggledEvent};
+use crate::common::events::{MusicState, MusicToggledEvent};
 
 use super::constants::WINDOW_PADDING;
 
