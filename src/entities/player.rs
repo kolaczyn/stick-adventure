@@ -4,10 +4,13 @@ use crate::{common::events::StickPickedEvent, systems::collider::Collider};
 
 use super::stick::{Stick, STICK_SIZE};
 
-pub const PLAYER_WIDTH: f32 = 15.0;
-pub const PLAYER_SPEED: f32 = 3.0;
-
 pub const PLAYER_SIZE: Vec2 = Vec2::new(PLAYER_WIDTH, PLAYER_WIDTH);
+
+pub const PLAYER_TEXTURE: &str = "textures/player.png";
+pub const PLAYER_TEXTURE_WIDTH: f32 = 16.0;
+
+pub const PLAYER_WIDTH: f32 = 32.0;
+pub const PLAYER_SPEED: f32 = 3.0;
 
 pub struct PlayerPlugin;
 
@@ -28,27 +31,26 @@ struct PlayerBundle {
 }
 
 impl PlayerBundle {
-    fn new(location: Vec3) -> Self {
+    fn new(location: Vec3, asset_server: Res<AssetServer>) -> Self {
+        let image = asset_server.load(PLAYER_TEXTURE);
+        let scale = PLAYER_WIDTH / PLAYER_TEXTURE_WIDTH;
         Self {
             sprite: SpriteBundle {
                 transform: Transform {
                     translation: location,
-                    scale: Vec3::new(PLAYER_WIDTH, PLAYER_WIDTH, 0.0),
+                    scale: Vec3::new(scale, scale, 1.0),
                     ..default()
                 },
-                sprite: Sprite {
-                    color: Color::ALICE_BLUE,
-                    ..default()
-                },
+                texture: image,
                 ..default()
             },
         }
     }
 }
 
-fn setup_player(mut commands: Commands) {
+fn setup_player(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
-        PlayerBundle::new(Vec3::new(0.0, 0.0, 0.0)),
+        PlayerBundle::new(Vec3::new(0.0, 0.0, 0.0), asset_server),
         Player,
         Collider,
     ));
