@@ -1,0 +1,5 @@
+{
+  "$schema": "./schema.json",
+  // TODO use camelCase
+  "is_music_enabled": false
+}

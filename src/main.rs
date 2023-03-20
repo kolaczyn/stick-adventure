@@ -19,7 +19,7 @@ fn main() {
         .add_plugin(PlayerPlugin)
         .add_plugin(ScorePlugin)
         .add_plugin(StickPlugin)
-        // .add_plugin(MusicPlugin)
+        .add_plugin(MusicPlugin)
         .add_plugin(AppUIPlugin)
         .add_plugin(EnemyPlugin)
         .add_plugin(EnemySpawnerPlugin)

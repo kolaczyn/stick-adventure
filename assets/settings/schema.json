@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "type": "object",
+  "properties": {
+    "is_music_enabled": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "is_music_enabled"
+  ]
+}
