@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::common::events::SpawnEnemyEvent;
 
-const ENEMY_SPAWN_RATE_SECS: f32 = 1.0;
+const ENEMY_SPAWN_RATE_SECS: f32 = 1.5;
 
 pub struct EnemySpawnerPlugin;
 
@@ -26,7 +26,6 @@ impl Default for EnemySpawnerTimer {
     }
 }
 
-// trigger the spawnEnemy event every ENEMY_SPAWN_RATE_SECS
 fn enemy_spawner_system(
     time: Res<Time>,
     mut _commands: Commands,
@@ -34,7 +33,6 @@ fn enemy_spawner_system(
     mut spawn_enemy_event_writer: EventWriter<SpawnEnemyEvent>,
 ) {
     if timer.timer.tick(time.delta()).just_finished() {
-        println!("Spawning enemy");
         spawn_enemy_event_writer.send(SpawnEnemyEvent);
     }
 }

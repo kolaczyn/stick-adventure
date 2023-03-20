@@ -80,7 +80,13 @@ fn check_player_stick_collision_system(
     mut stick_query: Query<(&Stick, &Transform, Entity, &Collider)>,
     mut stick_picked_events: EventWriter<StickPickedEvent>,
 ) {
-    let player = player_query.single_mut();
+    let player = player_query.iter_mut().next();
+    if player.is_none() {
+        return;
+    }
+    // I don't really like this unwrap, but I don't know how to do it better without lots of nesting
+    let player = player.unwrap();
+
     for (_stick, stick_transform, stick_entity, _stick_collider) in stick_query.iter_mut() {
         let collision = collide(
             player.1.translation,
